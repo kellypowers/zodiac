@@ -13,7 +13,8 @@ gem "hashie"
 gem 'json'
 gem 'nokogiri'
 gem 'pp'
-#gem 'httparty'
+gem 'httparty'
+gem 'colorize'
 
 
 group :development do 

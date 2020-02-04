@@ -1,4 +1,5 @@
 require 'pry'
+require 'colorize'
 require_relative './scraper2.rb'
 require_relative './zodiac2.rb'
 
@@ -49,7 +50,7 @@ def user_input_to_zodiac(num)
             end
         end
     else
-        "Please enter a valid date."
+        "Please enter a valid date.".blue.bold
     end
 end
 #user_input_to_zodiac(sign_with_date_hash, 1116)
@@ -60,7 +61,7 @@ def check_birthday(num)
     day = ''
     num_string = num.to_s
     if num_string.length <= 2 || num_string.length >= 5
-        puts "Please put the date in as MMDD"
+        puts "Please put the date in as MMDD".blue.bold
         return false
         #go to function asking input again
     elsif num_string.length >= 3 
@@ -83,14 +84,14 @@ def check_birthday(num)
             end
         end
     end
-    puts "Your entered #{month_var} #{day}. Is this correct? Y/N "
+    puts "Your entered #{month_var} #{day}. Is this correct? Y/N ".blue.bold
     input = gets.strip
     if input =~ (/[Yy](es)?/)
         return true
     else
         return false
     #if no, ask for input again and then ru this function again
-end
+    end
 end
 #check_birthday(1116, month_to_int)
 #after birthday is verified, give zodiac, then ask if they want to see their traits, give traits.
@@ -99,17 +100,17 @@ end
 
 
     def start
-        puts "Hello! Please type in your birthday (MMDD): "
+        puts "Hello! Please type in your birthday (MMDD): ".blue.bold
         user_input = gets.strip
         input1 = user_input.to_i
         zodiac_sign = ''
         zodiac = ''
         if !check_birthday(user_input)
-            "Please try again: "
+            "Please try again: ".blue.bold
             self.start
         else
             zodiac_sign = user_input_to_zodiac(input1)
-            puts "Your zodiac sign is #{zodiac_sign}"
+            puts "Your zodiac sign is #{zodiac_sign}".blue.bold
             zodiac = Zodiac2.create_new_zodiac(zodiac_sign.to_s)
         end
         self.zodiac_info(zodiac_sign)
@@ -125,20 +126,20 @@ end
     def zodiac_info(zodiac_sign)
          zodiac = Zodiac2.look_up_instance(zodiac_sign) #why does this return an array?? messed up cause when redirected from what now, it is not an array, goes no further
          #zodiac = zodiac1[0]
-        array_of_methods = ["traits", "symbol", "ruling_planet", "compatibility", "dates", "how_to_spot", "symbol", "element", "famous_people", "secret_wish", "hates"]
+        array_of_methods = ["traits", "physical_traits", "ruling_planet", "compatibility", "dates", "favorites", "symbol", "element", "famous_people", "secret_wish", "hates"]
         puts "What do you want to know about:
         1.  Traits
-        2.  Symbol
+        2.  Physical Traits
         3.  Ruling Planet
         4.  Compatible signs
         5.  Dates
-        6.  How to spot this sign
-        7. More"
+        6. Favorite things
+        7. More".blue.bold
         user_input = gets.strip 
         input = user_input.to_i
         method = array_of_methods[user_input_to_index(user_input)]
         if !input.between?(1, 7)
-            puts "Please select a valid number:"
+            puts "Please select a valid number:".blue.bold
             zodiac_info(zodiac_sign)
         elsif user_input_to_index(user_input) == 7
             puts "
@@ -146,21 +147,24 @@ end
             9. Element
             10. Famous people with this sign
             11. Secret wish
-            12. Hates"
+            12. Hates".blue.bold
             user_input = gets.strip
             input = user_input.to_i
             method = array_of_methods[user_input_to_index(user_input)]
             if !input.between?(8, 12)
-                puts "Please select a valid number:"
+                puts "Please select a valid number:".blue.bold
                 zodiac_info(zodiac_sign)
             else 
-                puts "\n\n #{zodiac.send(method)}\n\n "
+                puts "\n #{method} for #{zodiac.name} is:\n".blue.bold
+                puts "\n\n #{zodiac.send(method)}\n\n ".blue.bold
             end
         else 
-           puts "\n\n #{zodiac.send(method)} \n\n"
+            puts "\n #{method} for #{zodiac.name} is:\n".blue.bold
+            puts "\n\n #{zodiac.send(method)} \n\n".blue.bold
             
         end
     end
+    
 #after changing signs, the 'what do you want to know about' is good, then 'what do you want to know about' again second time is bad. 
     
             
@@ -182,24 +186,27 @@ end
         puts "What would you like to do now?
                 1. See another zodiac sign
                 2. Look at other characteristics
-                3. Exit"
+                3. Exit".blue.bold
         user_input = gets.strip 
         if user_input == "2"
             zodiac_info(zodiac.name)
+            #binding.pry this zodiac is not an array
         elsif user_input == "1"
             Zodiac2.clear
-            puts "Which sign would you like to see?"
+            puts "Which sign would you like to see?".blue.bold
             hash = @@sign_with_date_hash
             list = list_of_signs(hash)
             list
             user_input_sign = gets.strip 
             zodiac = Zodiac2.create_new_zodiac(choose_sign(user_input_sign, list))
+            puts "You selected #{zodiac.name}!".blue.bold
             #what_now(zodiac.name)
             zodiac_info(zodiac.name) #this returns an array for zodiac, not the object wen it was just zodiac in the argument
+            #binding.pry  so the return is NOT an array, but if you get back to 'what would you like to do now' and select 2 look at other traits, it says it is an array.
         elsif user_input == "3"
             exit!
         elsif user_input != "1" || user_input != "2" || user_input != "3"
-            puts "Please make a valid selection."
+            puts "Please make a valid selection.".blue.bold
             what_now(zodiac.name)
         end
     end
@@ -211,7 +218,7 @@ end
         key_array = sign_with_date_hash.keys
         key_array.each_with_index do |i, index|
             from_sym_to_str = i.to_s
-            puts "#{index + 1}. #{from_sym_to_str}"
+            puts "#{index + 1}. #{from_sym_to_str}".blue.bold
         end
         key_array
     end
@@ -221,13 +228,14 @@ end
     def choose_sign(input, array)
         sign = ''
         input = input.to_i - 1 
+        #list = [:Aries, :Taurus, :Gemini, :Cancer, :Leo, :Virgo, :Libra, :Scorpio, :Sagittarius, :Capricorn, :Aquarius, :Pisces] 
         list = list_of_signs(@@sign_with_date_hash)
         list.each_with_index do |i, index|
             if input == index 
                 sign = i.to_s
             end
         end
-        sign
+        sign #this returns string of the zodiac sign name
     end
 
     ###check this function to see return value is not an array
@@ -238,3 +246,12 @@ end
 
     #when going from what now to you want to know about another zodiac sign, select the sign, does not register as the object..hates gave ...,   ..array?
     #from look at other characteristics after choosing sign choose sign it comes up as array
+    #possible solutions for bugs: 
+    #bring the loop to the beginning instead of linking back to it several times throughout.
+    #when you want to look at another zodiac sign, link this to begining
+    #take out the greeting put it somewhere else? in the bin file maybe
+    #or, after looking at new zodiac sign, exit out of it.
+
+    #make a method to change method to a string with capital letter and no _ so it can be outputted nicely.
+
+    

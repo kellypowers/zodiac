@@ -36,14 +36,14 @@ load './lib/zodiac2.rb'
 scorp = Zodiac2.create_new_zodiac("Scorpio")
 def zodiac_info(zodiac_sign)
         zodiac = Zodiac2.look_up_instance(zodiac_sign)
-        array = ["traits", "symbol", "ruling_planet", "compatability", "dates, how_to_spot", "symbol", "element", "famous_people", "secret_wish", "hates"]
+        array = ["traits", "physical_traits", "ruling_planet", "compatability", "dates, favorite_things", "symbol", "element", "famous_people", "secret_wish", "hates"]
         puts "What do you want to know about:
         1.  Traits
-        2.  Symbol
+        2.  physical traits
         3.  Ruling Planet
         4.  Compatable signs
         5.  Dates
-        6.  How to spot this sign
+        6.  favorite things
         7. More"
         user_input = gets.strip 
         number = user_input.to_i - 1 
