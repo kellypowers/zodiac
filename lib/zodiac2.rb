@@ -41,7 +41,6 @@ class Zodiac2
         trait_array << self.good_traits
         trait_array << self.bad_traits
         trait_array << self.mental_traits
-        trait_array << self.physical_traits
         trait_list = trait_array.join(". ")
         trait_list
     end

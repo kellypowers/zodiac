@@ -1,9 +1,8 @@
 
-require_relative '../lib/zodiac.rb'
-require_relative '../lib/zodiac2.rb'
-require_relative '../lib/scraper2.rb'
+require_relative '../lib/requirements.rb'
+
 
 
 horoscope = CommandLineInterface.new
-horoscope.start
+horoscope.begin
 
