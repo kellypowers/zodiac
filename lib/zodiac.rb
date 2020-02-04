@@ -4,6 +4,8 @@ require_relative './zodiac2.rb'
 
 
 class CommandLineInterface
+
+    #these hashes will be used in later functions to create/display info
     @@sign_with_date_hash = {
         Aries: [321, 419],
         Taurus: [420, 520],
@@ -18,37 +20,24 @@ class CommandLineInterface
         Aquarius: [120, 218],
         Pisces: [219, 320]
         }
-        @@month_to_int = {
-            "January" => 1, 
-            "February" => 2, 
-            "March" => 3, 
-            "April" => 4,
-            "May" => 5,
-            "June" => 6, 
-            "July" => 7, 
-            "August" => 8,
-            "September" => 9,
-            "October" => 10,
-            "November" => 11,
-            "December" => 12
+
+     @@month_to_int = {
+        "January" => 1, 
+        "February" => 2, 
+        "March" => 3, 
+        "April" => 4,
+        "May" => 5,
+        "June" => 6, 
+        "July" => 7, 
+        "August" => 8,
+        "September" => 9,
+        "October" => 10,
+        "November" => 11,
+        "December" => 12
         }
 
 #takes the input(num) and compares with the sign&date hash to return zodiac sign 
 def user_input_to_zodiac(num)
-    # sign_with_date_hash = {
-    #     Aries: [321, 419],
-    #     Taurus: [420, 520],
-    #     Gemini: [521, 620],
-    #     Cancer: [621, 722],
-    #     Leo: [723, 822],
-    #     Virgo: [823, 922],
-    #     Libra: [923, 1022],
-    #     Scorpio: [1023, 1121],
-    #     Sagittarius: [1122, 1221],
-    #     Capricorn: [1222, 119],  #watch out for this one, need exception, end of year/beginning of year
-    #     Aquarius: [120, 218],
-    #     Pisces: [219, 320]
-    #     }
     if num.between?(1222, 1231) || num.between?(11, 119)
         return "Capricorn"
     elsif 
@@ -67,21 +56,6 @@ end
 
 #checks that the birthday is correct in the form 'February 1', uses userinput(num) checks against the monthtoint data
 def check_birthday(num)
-    # month_to_int = {
-    #     "January" => 1, 
-    #     "February" => 2, 
-    #     "March" => 3, 
-    #     "April" => 4,
-    #     "May" => 5,
-    #     "June" => 6, 
-    #     "July" => 7, 
-    #     "August" => 8,
-    #     "September" => 9,
-    #     "October" => 10,
-    #     "November" => 11,
-    #     "December" => 12
-    
-    # }
     month_var =''
     day = ''
     num_string = num.to_s
@@ -93,10 +67,8 @@ def check_birthday(num)
         @@month_to_int.each do |month, number|
             if num_string.length == 3
                 if num_string[0] == number.to_s
-                    #puts "num0 is #{num[0]} number is #{number}"
                     month_var = month 
                     day = "#{num_string[1]}" + "#{num_string[2]}"
-                    #puts "length 3 day is #{day} month is #{month_var}"
                 end
             elsif num_string.length == 4
                 if num_string[0] == "0"
@@ -105,10 +77,8 @@ def check_birthday(num)
                     day = "#{num_string[2]}" + "#{num_string[3]}"
                     end
                 elsif "#{num_string[0]}#{num_string[1]}" == "#{number}"
-                    #puts "num01 is #{num[0]}#{num[1]} number is #{number}"
                     month_var = month
                     day = "#{num_string[2]}" + "#{num_string[3]}"
-                    #puts "length 4 day is #{day} month is #{month_var}"
                 end
             end
         end
@@ -128,12 +98,6 @@ end
 
 
 
-    # def input_to_int(user_input1)
-    #      user_input1.to_i
-    # end
-
-
-
     def start
         puts "Hello! Please type in your birthday (MMDD): "
         user_input = gets.strip
@@ -148,8 +112,6 @@ end
             puts "Your zodiac sign is #{zodiac_sign}"
             zodiac = Zodiac2.create_new_zodiac(zodiac_sign.to_s)
         end
-        #zodiac = Zodiac2.look_up_instance(zodiac_sign)
-        #binding.pry
         self.zodiac_info(zodiac_sign)
         i = 0
         while i < 10 do #some other condition, just testing this out
@@ -159,6 +121,7 @@ end
         end
     end
 
+    #is this function too long? twice it asks for user input, changes it to index, then defines method... take that out and make that it's own function?
     def zodiac_info(zodiac_sign)
          zodiac = Zodiac2.look_up_instance(zodiac_sign) #why does this return an array?? messed up cause when redirected from what now, it is not an array, goes no further
          #zodiac = zodiac1[0]
@@ -191,16 +154,14 @@ end
                 puts "Please select a valid number:"
                 zodiac_info(zodiac_sign)
             else 
-                #method = array_of_methods[user_input_to_index]
                 puts "\n\n #{zodiac.send(method)}\n\n "
             end
         else 
-            #binding.pry
            puts "\n\n #{zodiac.send(method)} \n\n"
             
         end
     end
-#after changing signs, i can what do you want to know about good, then what do you want to know about again bad. 
+#after changing signs, the 'what do you want to know about' is good, then 'what do you want to know about' again second time is bad. 
     
             
     def user_input_to_index(input)
@@ -216,29 +177,13 @@ end
         index
     end
 
-        
-    # def valid?(num1, num2)
-    #     if user_input.to_i.between?(num1, num2)
-    #         true
-    #     else
-    #         false
-    #     end
-    # end
-    # def zodiac_methods
-    #     puts "What would you like to see? : \n1. Traits \n2. "
-    
     def what_now(zodiac_sign)
-        zodiac = Zodiac2.look_up_instance(zodiac_sign) #why does this return an array??
-        #zodiac = zodiac1[0]
-        #binding.pry
-        puts " What would you like to do now?
-        1. See another zodiac sign
-        2. Look at other characteristics
-        3. Exit"
+        zodiac = Zodiac2.look_up_instance(zodiac_sign) #why does this return an array after looping??
+        puts "What would you like to do now?
+                1. See another zodiac sign
+                2. Look at other characteristics
+                3. Exit"
         user_input = gets.strip 
-        # if user_input != "1" || user_input != "2" || user_input != "3"
-        #     puts "Please make a valid selection."
-        #     what_now(zodiac.name)
         if user_input == "2"
             zodiac_info(zodiac.name)
         elsif user_input == "1"
@@ -248,18 +193,20 @@ end
             list = list_of_signs(hash)
             list
             user_input_sign = gets.strip 
-            #choose_sign(user_input_sign, list_of_signs(sign_with_date_hash))
             zodiac = Zodiac2.create_new_zodiac(choose_sign(user_input_sign, list))
             #what_now(zodiac.name)
             zodiac_info(zodiac.name) #this returns an array for zodiac, not the object wen it was just zodiac in the argument
         elsif user_input == "3"
             exit!
+        elsif user_input != "1" || user_input != "2" || user_input != "3"
+            puts "Please make a valid selection."
+            what_now(zodiac.name)
         end
     end
 
 
 
-
+    #creates the list of signs that the user will select from if they select "See another zodiac sign" then "which sign would you like to see?"
     def list_of_signs(sign_with_date_hash)
         key_array = sign_with_date_hash.keys
         key_array.each_with_index do |i, index|
@@ -269,11 +216,8 @@ end
         key_array
     end
 
-    ##pisces how to spot freezes bc of double quotes
-    #10 give hates not famous people  9 gives secret with, not element
-    #when going from what now to you want to know about another zodiac sign, select the sign, does not register as the object..hates gave ...,   ..array?
-    #from look at other characteristics after choosing sign choose sign it comes up as array
 
+    #takes user input, compares to array of signs, returns the sign
     def choose_sign(input, array)
         sign = ''
         input = input.to_i - 1 
@@ -286,7 +230,11 @@ end
         sign
     end
 
-
-
-
+    ###check this function to see return value is not an array
 end
+
+    #bugs:
+    ##pisces 'how to spot' freezes bc of double quotes
+
+    #when going from what now to you want to know about another zodiac sign, select the sign, does not register as the object..hates gave ...,   ..array?
+    #from look at other characteristics after choosing sign choose sign it comes up as array

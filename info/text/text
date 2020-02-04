@@ -30,7 +30,7 @@ zodiac.methods
 
 array_of_methods = [traits, symbol, ruling_planet, compatability, dates, how_to_spot, symbol, element, famous_people, secret_wish, hates]
  
-
+Zodiac2.look_up_instance(scorp.name)
 
 load './lib/zodiac2.rb'
 scorp = Zodiac2.create_new_zodiac("Scorpio")
