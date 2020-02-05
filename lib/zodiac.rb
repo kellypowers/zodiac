@@ -106,11 +106,11 @@ class CommandLineInterface
     def zodiac_info(zodiac)
         array_of_methods = ["traits", "physical_traits", "ruling_planet", "compatibility", "dates", "favorites", "symbol", "element", "famous_people", "secret_wish", "hates"]
         puts "\nWhat would you like to know about? :
-            1.  Traits
-            2.  Physical Traits
-            3.  Ruling Planet
-            4.  Compatible signs
-            5.  Dates
+            1. Traits
+            2. Physical Traits
+            3. Ruling Planet
+            4. Compatible signs
+            5. Dates
             6. Favorite things
             7. More".blue.bold
         user_input = gets.strip 
@@ -132,6 +132,10 @@ class CommandLineInterface
             if !input.between?(8, 12)
                 puts "\nPlease select a valid number:".blue.bold
                 zodiac_info(@zodiac)
+            elsif input == 10 
+                puts "\n #{method_to_string(method)} for #{@zodiac.name} is:\n".blue.bold
+                puts "\n\n #{(@zodiac.send(method)).join("\n")} \n\n".blue.bold
+                what_now(@zodiac)
             else 
                 puts "\n #{method_to_string(method)} for #{@zodiac.name} is:\n".blue.bold
                 array = @zodiac.send(method)
@@ -174,6 +178,7 @@ class CommandLineInterface
             list
             user_input_sign = gets.strip 
             @zodiac = Zodiac2.create_new_zodiac(choose_sign(user_input_sign, list))
+            system "clear"
             puts "You selected #{@zodiac.name}!".blue.bold
             zodiac_info(@zodiac) 
         elsif user_input == "3"
