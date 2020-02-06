@@ -87,9 +87,10 @@ class CommandLineInterface
     #after birthday is verified, give zodiac, then ask if they want to see their traits, give traits.
 
     def begin
+        Zodiac2.create_new_zodiacs
         puts "Hello! Please type in your birthday (MMDD):".blue.bold 
         user_input = gets.strip
-        input1 = user_input
+        input1 = user_input.to_i
         zodiac_sign = ''
         if !check_birthday(user_input)
             "Please try again: ".blue.bold
@@ -97,7 +98,8 @@ class CommandLineInterface
         else
             zodiac_sign = user_input_to_zodiac(input1).to_s
             puts "Your zodiac sign is #{zodiac_sign}".blue.bold
-            @zodiac = Zodiac2.create_new_zodiac(zodiac_sign)
+            @zodiac = Zodiac2.all.find{|z| z.name == zodiac_sign}
+            binding.pry
         end
         zodiac_info(@zodiac)
     end
@@ -191,7 +193,7 @@ class CommandLineInterface
             list = list_of_signs(hash)
             list
             user_input_sign = gets.strip 
-            @zodiac = Zodiac2.create_new_zodiac(choose_sign(user_input_sign))
+            #get zodiac
             system "clear"
             puts "You selected #{@zodiac.name}!".blue.bold
             zodiac_info(@zodiac) 
