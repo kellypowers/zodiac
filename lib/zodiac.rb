@@ -89,7 +89,7 @@ class CommandLineInterface
     def begin
         puts "Hello! Please type in your birthday (MMDD):".blue.bold 
         user_input = gets.strip
-        input1 = user_input
+        date = Date.parse(user_input)
         zodiac_sign = ''
         if !check_birthday(user_input)
             "Please try again: ".blue.bold
