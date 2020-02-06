@@ -1,7 +1,7 @@
 class CommandLineInterface
-    
+ 
     #these hashes will be used in later functions to create/display info
-    @@sign_with_date_hash = {
+    SIGN_AND_DATE_HASH = {
         Aries: [321, 419],
         Taurus: [420, 520],
         Gemini: [521, 620],
@@ -16,7 +16,7 @@ class CommandLineInterface
         Pisces: [219, 320]
         }
 
-     @@month_to_int = {
+     MONTH_TO_INT = {
         "January" => 1, 
         "February" => 2, 
         "March" => 3, 
@@ -35,7 +35,7 @@ class CommandLineInterface
         if input.between?(1222, 1231) || input.between?(11, 119)
             return "Capricorn"
         elsif 
-            @@sign_with_date_hash.each do |sign, date| 
+            SIGN_AND_DATE_HASH.each do |sign, date| 
                 if input.between?(date[0], date[1])
                     zodiac_sign = sign.to_s
                     return zodiac_sign
@@ -56,19 +56,19 @@ class CommandLineInterface
             return false
             #go to function asking input again
         else
-            @@month_to_int.each do |month, number|
+            MONTH_TO_INT.each do |month, month_number| 
                 if input_string.length == 3
-                    if input_string[0] == number.to_s
+                    if input_string[0] == month_number.to_s
                         month_var = month 
                         day = "#{input_string[1]}" + "#{input_string[2]}"
                     end
                 elsif input_string.length == 4
                     day = "#{input_string[2]}" + "#{input_string[3]}"
                     if input_string[0] == "0"
-                        if input_string[1] == number.to_s
+                        if input_string[1] == month_number.to_s
                         month_var = month 
                         end
-                    elsif "#{input_string[0]}#{input_string[1]}" == "#{number}"
+                    elsif "#{input_string[0]}#{input_string[1]}" == "#{month_number}"
                         month_var = month
                     end
                 end
@@ -83,13 +83,13 @@ class CommandLineInterface
         #if no, ask for input again and then ru this function again
         end
     end
-    #check_birthday(1116, month_to_int)
+    #check_birthday(1116)
     #after birthday is verified, give zodiac, then ask if they want to see their traits, give traits.
 
     def begin
         puts "Hello! Please type in your birthday (MMDD):".blue.bold 
         user_input = gets.strip
-        input1 = user_input.to_i
+        input1 = user_input
         zodiac_sign = ''
         if !check_birthday(user_input)
             "Please try again: ".blue.bold
@@ -102,17 +102,20 @@ class CommandLineInterface
         zodiac_info(@zodiac)
     end
 
+
     #is this function too long? twice it asks for user input, changes it to index, then defines method... take that out and make that it's own function?
     def zodiac_info(zodiac)
         array_of_methods = ["traits", "physical_traits", "ruling_planet", "compatibility", "dates", "favorites", "symbol", "element", "famous_people", "secret_wish", "hates"]
-        puts "\nWhat would you like to know about? :
+        puts <<~OPTIONS
+        What would you like to know about? :
             1. Traits
             2. Physical Traits
             3. Ruling Planet
             4. Compatible signs
             5. Dates
             6. Favorite things
-            7. More".blue.bold
+            7. #{"More".blue.bold}
+        OPTIONS
         user_input = gets.strip 
         input = user_input.to_i
         method = array_of_methods[user_input_to_index(user_input)]
@@ -133,22 +136,33 @@ class CommandLineInterface
                 puts "\nPlease select a valid number:".blue.bold
                 zodiac_info(@zodiac)
             elsif input == 10 
-                puts "\n #{method_to_string(method)} for #{@zodiac.name} is:\n".blue.bold
-                puts "\n\n #{(@zodiac.send(method)).join("\n")} \n\n".blue.bold
+                puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
+                puts "\n\n #{(zodiac.send(method)).join("\n")} \n\n".blue.bold
                 what_now(@zodiac)
             else 
-                puts "\n #{method_to_string(method)} for #{@zodiac.name} is:\n".blue.bold
-                array = @zodiac.send(method)
-                puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
-                what_now(@zodiac)
+                apply_method(method, zodiac)
+                # puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
+                # array = zodiac.send(method)
+                # puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
+                # what_now(@zodiac)
             end
         else 
-            puts "\n #{method_to_string(method)} for #{@zodiac.name} is:\n".blue.bold
-            array = @zodiac.send(method)
-            puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
-            what_now(@zodiac)
+        #     puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
+        #     array = zodiac.send(method)
+        #     puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
+        #     what_now(@zodiac)
+        # end
+        apply_method(method, zodiac)
         end
     end
+
+    def apply_method(method, zodiac)
+        puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
+        array = zodiac.send(method)
+        puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
+        what_now(@zodiac)
+    end
+
           
     def user_input_to_index(input)
         input = input.to_i
@@ -164,20 +178,20 @@ class CommandLineInterface
     end
 
     def what_now(zodiac)
-        puts "What would you like to do now?
-                1. See another zodiac sign
-                2. Look at other characteristics
-                3. Exit".blue.bold
+        puts "What would you like to do now? \n
+            1. See another zodiac sign
+            2. Look at other characteristics
+            3. Exit".blue.bold
         user_input = gets.strip 
         if user_input == "2"
             zodiac_info(@zodiac)
         elsif user_input == "1"
             puts "Which sign would you like to see?".blue.bold
-            hash = @@sign_with_date_hash
+            hash = SIGN_AND_DATE_HASH
             list = list_of_signs(hash)
             list
             user_input_sign = gets.strip 
-            @zodiac = Zodiac2.create_new_zodiac(choose_sign(user_input_sign, list))
+            @zodiac = Zodiac2.create_new_zodiac(choose_sign(user_input_sign))
             system "clear"
             puts "You selected #{@zodiac.name}!".blue.bold
             zodiac_info(@zodiac) 
@@ -189,9 +203,11 @@ class CommandLineInterface
         end
     end
 
+
+    
     #creates the list of signs that the user will select from if they select "See another zodiac sign" then "which sign would you like to see?"
-    def list_of_signs(sign_with_date_hash)
-        key_array = sign_with_date_hash.keys
+    def list_of_signs(hash)
+        key_array = hash.keys
         key_array.each_with_index do |i, index|
             from_sym_to_str = i.to_s
             puts "#{index + 1}. #{from_sym_to_str}".blue.bold
@@ -200,10 +216,10 @@ class CommandLineInterface
     end
 
     #takes user input, compares to array of signs, returns the sign
-    def choose_sign(input, array)
+    def choose_sign(input)
         sign = ''
         input = input.to_i - 1 
-        list = list_of_signs(@@sign_with_date_hash)
+        list = list_of_signs(SIGN_AND_DATE_HASH)
         list.each_with_index do |i, index|
             if input == index 
                 sign = i.to_s
