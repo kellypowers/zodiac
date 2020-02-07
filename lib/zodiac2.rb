@@ -3,7 +3,7 @@ require_relative './scraper2.rb'
 
 
 class Zodiac2
-    attr_accessor :array_of_methods, :traits, :dates, :scraper2, :_id, :name, :famous_people, :how_to_spot, :secret_wish, :hates, :bad_traits, :good_traits, :favorites, :ruling_planet, :symbol, :compatibility, :mental_traits, :physical_traits, :sun_dates, :element
+    attr_accessor :traits, :dates, :scraper2, :name, :famous_people, :how_to_spot, :secret_wish, :hates, :bad_traits, :good_traits, :favorites, :ruling_planet, :symbol, :compatibility, :mental_traits, :physical_traits, :sun_dates, :element
     
     @@all = []
 
@@ -15,6 +15,15 @@ class Zodiac2
     def self.create_new_zodiacs
         Scraper2.new.scrape
     end
+
+    def self.all_dates
+        self.all.map {|zodiac| zodiac.sun_dates}
+    end
+
+    def self.all_names
+        self.all.map {|zodiac| zodiac.name }
+    end
+
 
     def self.look_up_instance(zodiac_sign)
         Zodiac2.all.each do |i| 

@@ -1,123 +1,64 @@
 class CommandLineInterface
- 
-    #these hashes will be used in later functions to create/display info
-    SIGN_AND_DATE_HASH = {
-        Aries: [321, 419],
-        Taurus: [420, 520],
-        Gemini: [521, 620],
-        Cancer: [621, 722],
-        Leo: [723, 822],
-        Virgo: [823, 922],
-        Libra: [923, 1022],
-        Scorpio: [1023, 1121],
-        Sagittarius: [1122, 1221],
-        Capricorn: [1222, 119],  #watch out for this one, need exception, end of year/beginning of year
-        Aquarius: [120, 218],
-        Pisces: [219, 320]
-        }
 
-     MONTH_TO_INT = {
-        "January" => 1, 
-        "February" => 2, 
-        "March" => 3, 
-        "April" => 4,
-        "May" => 5,
-        "June" => 6, 
-        "July" => 7, 
-        "August" => 8,
-        "September" => 9,
-        "October" => 10,
-        "November" => 11,
-        "December" => 12
-        }
-    #takes the input and compares with the sign&date hash to return zodiac sign 
-    def user_input_to_zodiac(input)
-        if input.between?(1222, 1231) || input.between?(11, 119)
-            return "Capricorn"
-        elsif 
-            SIGN_AND_DATE_HASH.each do |sign, date| 
-                if input.between?(date[0], date[1])
-                    zodiac_sign = sign.to_s
-                    return zodiac_sign
-                end
-            end
-        else
-            "Please enter a valid date.".blue.bold
-        end
-    end
-   
-    #checks that the birthday is correct in the form 'February 1'
     def check_birthday(input)
-        month_var = ''
-        day = ''
-        input_string = input.to_s
-        if input_string.length <= 2 || input_string.length >= 5
-            puts "Please put the date in as MMDD".blue.bold
+        #new_input = ''
+        if input.include?('-')
+            input = input.gsub('-', '/')
+        elsif 
+            input.length > 5 || input.length < 3
             return false
-            #go to function asking input again
-        else
-            MONTH_TO_INT.each do |month, month_number| 
-                if input_string.length == 3
-                    if input_string[0] == month_number.to_s
-                        month_var = month 
-                        day = "#{input_string[1]}" + "#{input_string[2]}"
-                    end
-                elsif input_string.length == 4
-                    day = "#{input_string[2]}" + "#{input_string[3]}"
-                    if input_string[0] == "0"
-                        if input_string[1] == month_number.to_s
-                        month_var = month 
-                        end
-                    elsif "#{input_string[0]}#{input_string[1]}" == "#{month_number}"
-                        month_var = month
-                    end
-                end
-            end
         end
-        puts "Your entered #{month_var} #{day}. Is this correct? Y/N ".blue.bold
-        input = gets.strip
-        if input =~ (/[Yy](es)?/)
-            return true
+        date = Date.parse(input)
+        month = Date::MONTHNAMES[date.month]
+        puts "You entered: ".blue.bold + "#{month} #{date.day}".magenta.bold + ", is that correct?".blue.bold
+        user_input = gets.strip
+        if user_input =~ (/[Yy](es)?/)
+            return true 
         else
             return false
-        #if no, ask for input again and then ru this function again
         end
     end
-    #check_birthday(1116)
-    #after birthday is verified, give zodiac, then ask if they want to see their traits, give traits.
+
+    def user_input_to_zodiac(input)
+        zodiac_sign = ''
+        dates = []
+        Zodiac2.all_dates.each do |date_array|
+            if Date.parse(input).between?(Date.parse(date_array[0]), Date.parse(date_array[1]))
+                dates = date_array
+            end
+        end
+        Zodiac2.all.each do |zodiac|
+            if zodiac.sun_dates == dates
+                @zodiac = zodiac
+            elsif Date.parse(input).between?(Date.parse("12/22"), Date.parse("12/31")) || Date.parse(input).between?(Date.parse("01/01"), Date.parse("01/19"))
+                @zodiac = Zodiac2.all.find{|zodiac| zodiac.name == "Capricorn"}
+            end
+        end
+    @zodiac
+    #binding.pry
+    end
 
     def begin
         Zodiac2.create_new_zodiacs
-        puts "Hello! Please type in your birthday (MMDD):".blue.bold 
+        puts "Hello! Please type in your birthday (MM/DD):".blue.bold 
         user_input = gets.strip
-        input1 = user_input.to_i
+        date = Date.parse(user_input)
         zodiac_sign = ''
         if !check_birthday(user_input)
             "Please try again: ".blue.bold
             self.begin
         else
-            zodiac_sign = user_input_to_zodiac(input1).to_s
-            puts "Your zodiac sign is #{zodiac_sign}".blue.bold
-            @zodiac = Zodiac2.all.find{|z| z.name == zodiac_sign}
-            binding.pry
+            @zodiac = user_input_to_zodiac(user_input)
+            puts "Your zodiac sign is ".blue.bold + "#{@zodiac.name}".magenta.bold
+            #@zodiac = Zodiac2.all.find{|z| z.name == zodiac_sign}
         end
         zodiac_info(@zodiac)
     end
 
 
-    #is this function too long? twice it asks for user input, changes it to index, then defines method... take that out and make that it's own function?
     def zodiac_info(zodiac)
         array_of_methods = ["traits", "physical_traits", "ruling_planet", "compatibility", "dates", "favorites", "symbol", "element", "famous_people", "secret_wish", "hates"]
-        puts <<~OPTIONS
-        What would you like to know about? :
-            1. Traits
-            2. Physical Traits
-            3. Ruling Planet
-            4. Compatible signs
-            5. Dates
-            6. Favorite things
-            7. #{"More".blue.bold}
-        OPTIONS
+        puts options1.blue.bold
         user_input = gets.strip 
         input = user_input.to_i
         method = array_of_methods[user_input_to_index(user_input)]
@@ -125,75 +66,82 @@ class CommandLineInterface
             puts "\n Please select a valid number:".blue.bold
             zodiac_info(@zodiac)
         elsif user_input_to_index(user_input) == 7
-            puts "
-            8. Symbol
-            9. Element
-            10. Famous people with this sign
-            11. Secret wish
-            12. Hates".blue.bold
+            puts options2.blue.bold
             user_input = gets.strip
             input = user_input.to_i
             method = array_of_methods[user_input_to_index(user_input)]
-            if !input.between?(8, 12)
+            if input.between?(1, 7)
+                apply_method(method, zodiac)
+            elsif !input.between?(8, 12) 
                 puts "\nPlease select a valid number:".blue.bold
                 zodiac_info(@zodiac)
             elsif input == 10 
-                puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
-                puts "\n\n #{(zodiac.send(method)).join("\n")} \n\n".blue.bold
+                puts "\n #{method_to_string(method)}".magenta.bold + " for ".blue.bold + "#{zodiac.name}".magenta.bold  + " is:".blue.bold
+                puts "\n\n #{(zodiac.send(method)).join("\n")} \n\n".magenta
                 what_now(@zodiac)
             else 
                 apply_method(method, zodiac)
-                # puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
-                # array = zodiac.send(method)
-                # puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
-                # what_now(@zodiac)
             end
         else 
-        #     puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
-        #     array = zodiac.send(method)
-        #     puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
-        #     what_now(@zodiac)
-        # end
         apply_method(method, zodiac)
         end
     end
 
+    def options1 
+    <<~OPTIONS
+
+            What would you like to know about? :
+
+            1. Traits
+            2. Physical Traits
+            3. Ruling Planet
+            4. Compatible signs
+            5. Dates
+            6. Favorite things
+            7. More
+        OPTIONS
+    end
+
+    def options2 
+        <<~OPTIONS2
+            8. Symbol
+            9. Element
+            10. Famous people with this sign
+            11. Secret wish
+            12. Hates 
+        OPTIONS2
+    end
+
+    def menu 
+        <<~MENU 
+        What would you like to do now? \n
+        1. See another zodiac sign
+        2. Look at other characteristics
+        3. Exit
+        MENU
+    end
+
     def apply_method(method, zodiac)
-        puts "\n #{method_to_string(method)} for #{zodiac.name} is:\n".blue.bold
+        puts "#{method_to_string(method)}".magenta.bold + " for ".blue.bold + "#{zodiac.name}".magenta.bold + " is:".blue.bold
         array = zodiac.send(method)
-        puts "\n\n #{output_array_to_string(array)}\n\n ".blue.bold
+        puts "\n\n#{output_array_to_string(array)}\n\n ".magenta
         what_now(@zodiac)
     end
 
-          
-    def user_input_to_index(input)
-        input = input.to_i
-        index = 0
-        if input.between?(1, 6)
-            index = input - 1 
-        elsif input.between?(8, 12)
-            index = input - 2 
-        elsif input == 7
-            index = 7
-        end
-        index
-    end
-
     def what_now(zodiac)
-        puts "What would you like to do now? \n
-            1. See another zodiac sign
-            2. Look at other characteristics
-            3. Exit".blue.bold
+        puts menu.blue.bold
         user_input = gets.strip 
         if user_input == "2"
             zodiac_info(@zodiac)
         elsif user_input == "1"
             puts "Which sign would you like to see?".blue.bold
-            hash = SIGN_AND_DATE_HASH
-            list = list_of_signs(hash)
-            list
+            Zodiac2.all_names.each_with_index {|name, index| puts "#{index+1}. #{name}".blue.bold}
+            #binding.pry
             user_input_sign = gets.strip 
             #get zodiac
+            user_input_index = user_input_sign.to_i - 1 
+            zodiac_sign = Zodiac2.all_names[user_input_index]
+            @zodiac = Zodiac2.all.find{|z| z.name == zodiac_sign}
             system "clear"
             puts "You selected #{@zodiac.name}!".blue.bold
             zodiac_info(@zodiac) 
@@ -207,28 +155,30 @@ class CommandLineInterface
 
 
     
-    #creates the list of signs that the user will select from if they select "See another zodiac sign" then "which sign would you like to see?"
-    def list_of_signs(hash)
-        key_array = hash.keys
-        key_array.each_with_index do |i, index|
-            from_sym_to_str = i.to_s
-            puts "#{index + 1}. #{from_sym_to_str}".blue.bold
+    # #creates the list of signs that the user will select from if they select "See another zodiac sign" then "which sign would you like to see?"
+    # def list_of_signs(hash)
+    #     key_array = hash.keys
+    #     key_array.each_with_index do |i, index|
+    #         from_sym_to_str = i.to_s
+    #         puts "#{index + 1}. #{from_sym_to_str}".blue.bold
+    #     end
+    #     key_array
+    # end
+
+
+    def user_input_to_index(input)
+        input = input.to_i
+        index = 0
+        if input.between?(1, 6)
+            index = input - 1 
+        elsif input.between?(8, 12)
+            index = input - 2 
+        elsif input == 7
+            index = 7
         end
-        key_array
+        index
     end
 
-    #takes user input, compares to array of signs, returns the sign
-    def choose_sign(input)
-        sign = ''
-        input = input.to_i - 1 
-        list = list_of_signs(SIGN_AND_DATE_HASH)
-        list.each_with_index do |i, index|
-            if input == index 
-                sign = i.to_s
-            end
-        end
-        sign #this returns string of the zodiac sign name
-    end
 
     def method_to_string(method)
         array = method.split('_')
@@ -251,7 +201,4 @@ class CommandLineInterface
     end
 end
 
-   
-
-    #make a method to change output of the zodiac methods, if array, join with . 
 
