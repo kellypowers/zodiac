@@ -14,13 +14,17 @@ before starting.
 ### Installing
 
 
-To run the program, be sure you are in the zodiac directory and type in the terminal
+To run the program, be sure you are in the zodiac directory 
+```
+cd zodiac
+```
+and type in the terminal
 ```
 bin/zodiac_sign
 ```
 or 
 ```
-ruby bin/zodiac_sign
+ruby ./bin/zodiac_sign
 ```
 
 

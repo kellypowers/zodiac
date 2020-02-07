@@ -10,7 +10,7 @@ class CommandLineInterface
         end
         date = Date.parse(input)
         month = Date::MONTHNAMES[date.month]
-        puts "You entered: ".blue.bold + "#{month} #{date.day}".magenta.bold + ", is that correct?".blue.bold
+        puts "You entered: ".blue.bold + "#{month} #{date.day}".magenta.bold + ", is that correct? Y/N".blue.bold
         user_input = gets.strip
         if user_input =~ (/[Yy](es)?/)
             return true 
@@ -143,7 +143,7 @@ class CommandLineInterface
             zodiac_sign = Zodiac2.all_names[user_input_index]
             @zodiac = Zodiac2.all.find{|z| z.name == zodiac_sign}
             system "clear"
-            puts "You selected #{@zodiac.name}!".blue.bold
+            puts "You selected ".blue.bold + "#{@zodiac.name}".magenta.bold + "!".blue.bold
             zodiac_info(@zodiac) 
         elsif user_input == "3"
             exit!
