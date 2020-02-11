@@ -56,6 +56,6 @@ class Zodiac
         array_dates.join(' - ')
     end
 
-
+                         
 end
 

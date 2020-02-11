@@ -30,7 +30,13 @@ ruby ./bin/zodiac_sign
 
 ## Contributing
 
+
+
 Please read [CONTRIBUTING.md] for details on our code of conduct, and the process for submitting pull requests to us.
+
+Symbols taken from the following source 
+     https://asciiart.website/
+    https://asciiart.website/index.php?art=religion/astrology
 
 
 ## Authors

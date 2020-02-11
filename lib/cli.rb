@@ -23,6 +23,11 @@ class CommandLineInterface
         elsif 
             input.length > 5 || input.length < 3
             return false
+        elsif input.length == 4 
+            if input[0].to_i >  1 || input[1].to_i > 2 
+                puts "That date is not valid. please try again"
+                self.begin 
+            end
         end
         date = Date.parse(input)
         month = Date::MONTHNAMES[date.month] #uses built in class constant to select the name of the month based on the number input
@@ -77,7 +82,7 @@ class CommandLineInterface
             puts "\nPlease select a valid number:".blue.bold
             zodiac_info(@zodiac)
         elsif user_input == 10  #exception for famous_people method because the capitalization should be kept as it was originally.
-            puts "\n #{method_to_string(method)}".magenta.bold + " who also have ".blue.bold + "#{zodiac.name}".magenta.bold  + "sign :".blue.bold
+            puts "\n #{method_to_string(method)}".magenta.bold + " who also have ".blue.bold + "#{zodiac.name}".magenta.bold  + " sign :".blue.bold
             puts "\n\n #{(zodiac.send(method)).join("\n")} \n\n".magenta
             what_now(@zodiac)
         elsif user_input == 7
@@ -129,7 +134,7 @@ class CommandLineInterface
         puts "\n\n#{output_array_to_string(method_output)}\n\n ".magenta
         what_now(@zodiac)
     end
-    
+
     #what now gives the "what would you like to do now" menu, gives list of zodiac signs, takes user input and returns what the user requested to see
     def what_now(zodiac)
         puts menu.blue.bold
