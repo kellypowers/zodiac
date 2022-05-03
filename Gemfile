@@ -8,7 +8,7 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 source "https://rubygems.org"
 #gem "rspec"
-gem "sinatra", '1.4.4'
+gem "sinatra", '2.2.0'
 gem "hashie"
 gem 'json'
 gem 'nokogiri'
